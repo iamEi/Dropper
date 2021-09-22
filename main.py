@@ -46,8 +46,6 @@ score = 0
 high_score = 0
 intro = True
 running = False
-can_move = True
-can_stand = False
 
 #creating objects
 stat = Score(screen)
@@ -55,7 +53,8 @@ start = Intro(screen,bg,bg_rect)
 
 #creating sprites
 player = pygame.sprite.GroupSingle()
-player.add(Player(can_stand))
+player.add(Player())
+Player = player.sprite
 platforms = pygame.sprite.Group()
 spike_group = pygame.sprite.Group()
 for i in [-10,120,250,380]:
@@ -64,24 +63,22 @@ for i in [-10,120,250,380]:
 
 #controlling the flow of the game states
 def state():
-	global running, intro, can_stand,can_move,score, start_time
+	global running, intro,score
 	if intro:
 		intro = start.draw_intro()
+		#pressing SPACE would make intro = FALSE, running the game.
 		if not intro:
-			start_time = pygame.time.get_ticks()//750
-			score = 0
+			reset_score()
 			running = True
-			
+
 	elif running:
 		over.stop()
 		for platform in platforms.sprites():
-			can_stand = on_platform(platform.rect)
-			can_move = check_collisions(platform.rect)
-			if can_move == False:
-				player.sprite.dont_move()
-			if can_stand:
-				if(platform.rect.left<player.sprite.rect.right) and (player.sprite.rect.left<platform.rect.right):
-					player.sprite.move_up(platform.rect)
+			Platform = platform.rect
+			if path_blocked(Platform):
+				Player.block_movement()
+			if on_platform(Platform):
+				Player.rect.bottom = Platform.top
 
 		#draw background
 		screen.blit(bg,bg_rect)
@@ -116,16 +113,20 @@ def state():
 		over.play(loops = -1, fade_ms=1900)
 
 		#reset numbers
-		score = 0
-		start_time = pygame.time.get_ticks()//750
+		reset_score()
 		stat.display_highscore(high_score)
 
 		#reset player position
-		player.sprite.reset()
+		Player.reset()
 		initplat_rect.center = (250,250)
 
 		#clear all platforms
 		platforms.empty()
+
+def reset_score():
+	global score, start_time
+	score = 0
+	start_time = pygame.time.get_ticks()//750
 
 
 #checking if player goes out of bounds
@@ -137,18 +138,18 @@ def game_over():
 	return True
 
 #checking if player is colliding with platform, if yes, dont let the player move further
-def check_collisions(pf):
+def path_blocked(pf):
 	if player.sprite.rect.colliderect(pf) and not on_platform(pf):
 		if abs(pf.left - player.sprite.rect.right) < 10:
-			return False
+			return True
 		if abs(pf.right - player.sprite.rect.left) < 10:
-			return False
-	return True
+			return True
+	return False
 
 #checking if player is standing on platform, if yes, do not apply gravity
-def on_platform(pf):
-	if player.sprite.rect.colliderect(pf):
-		if abs(pf.top - player.sprite.rect.bottom) < 20:
+def on_platform(platform):
+	if Player.rect.colliderect(platform):
+		if abs(platform.top - Player.rect.bottom) < 20 and ((platform.left < Player.rect.right) and (Player.rect.left < platform.right)):
 			return True
 	return False
 
@@ -164,7 +165,7 @@ while True:
 				platforms.add(Platforms())
 
 		if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-			bgm.play(-1)
+			bgm.play(loops = -1)
 			running = True
 
 	state()

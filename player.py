@@ -1,7 +1,7 @@
 import pygame as pg
 
 class Player(pg.sprite.Sprite):
-	def __init__(self,on_platform = False):
+	def __init__(self):
 		super().__init__()
 		
 		self.stand = self.transform('images/front-stand.png')
@@ -18,7 +18,6 @@ class Player(pg.sprite.Sprite):
 		r4 = self.transform('images/right-walk2.png')
 		self.right = [r1,r3,r1,r4]
 
-		self.on_platform = on_platform
 		self.image = self.stand
 		self.rect = self.image.get_rect(midtop = (250,240))
 
@@ -33,14 +32,9 @@ class Player(pg.sprite.Sprite):
 		return pg.transform.scale(scaled,(48,48))
 
 	def apply_gravity(self):
-		if not self.on_platform:
-			self.rect.y += self.gravity
+		self.rect.y += self.gravity
 
-	def move_up(self,platform):
-		# if platform.top
-		self.rect.bottom = platform.top
-
-	def dont_move(self):
+	def block_movement(self):
 		if self.direction == 'right':
 			self.rect.x -= 5
 		else:

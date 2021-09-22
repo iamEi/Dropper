@@ -12,7 +12,7 @@ class Platforms(pygame.sprite.Sprite):
 
 
 	def move(self):
-		self.rect.y -= 5
+		self.rect.y -= 4
 
 	def destroy(self):
 		if self.rect.y < -50:
