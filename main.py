@@ -29,7 +29,7 @@ bg_rect = bg.get_rect(topleft = (0,0))
 #for initial platform for player to stand at the start
 initplat = pygame.image.load('images/platform_2.png')
 initplat = pygame.transform.scale(initplat, (200, 35))
-initplat_rect = initplat.get_rect(center = (WIDTH/2,250))
+initplat_rect = initplat.get_rect(midbottom = (WIDTH/2,300))
 
 #game over and background music
 over = pygame.mixer.Sound('sounds/game_over.mp3')
@@ -86,8 +86,8 @@ def state():
 		#initial platform
 		initplat_rect.y -= 1
 		screen.blit(initplat,initplat_rect)
-		if player.sprite.rect.colliderect(initplat_rect):
-			player.sprite.rect.bottom = initplat_rect.top
+		if Player.rect.colliderect(initplat_rect):
+			Player.rect.bottom = initplat_rect.top
 
 		#draw platforms
 		platforms.draw(screen)
