@@ -92,7 +92,7 @@ def on_platform(platform):
 	return False
 
 #controlling the flow of the game states
-def state():
+def gamestate():
 	global running, intro,score
 	if intro:
 		intro = start.draw_intro()
@@ -168,6 +168,6 @@ while True:
 			bgm.play(loops = -1)
 			running = True
 
-	state()
+	gamestate()
 	pygame.display.flip()
 	clock.tick(60)
