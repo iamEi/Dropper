@@ -4,7 +4,6 @@ from player import Player
 from platforms import Platforms
 from score import Score
 from spikes import Spikes
-from gamestate import Gamestate
 from intro import Intro
 
 #initializing pygame

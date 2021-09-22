@@ -37,7 +37,7 @@ class Player(pg.sprite.Sprite):
 	def block_movement(self):
 		if self.direction == 'right':
 			self.rect.x -= 5
-		else:
+		elif self.direction == 'left':
 			self.rect.x += 5
 
 	def move(self,direction = 0,vex = 0):
