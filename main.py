@@ -61,6 +61,36 @@ for i in [-10,120,250,380]:
 	spike_group.add(Spikes(i,-15))
 
 
+def reset_score():
+	global score, start_time
+	score = 0
+	start_time = pygame.time.get_ticks()//750
+
+
+#checking if player goes out of bounds
+def game_over():
+	global high_score
+	if HEIGHT < Player.rect.top or pygame.sprite.spritecollide(Player,spike_group,False):
+		high_score = stat.save_highscore(score,high_score)
+		return False
+	return True
+
+#checking if player is colliding with platform, if yes, dont let the player move further
+def path_blocked(platform):
+	if Player.rect.colliderect(platform) and not on_platform(platform):
+		if abs(platform.left - Player.rect.right) < 10:
+			return True
+		if abs(platform.right - Player.rect.left) < 10:
+			return True
+	return False
+
+#checking if player is standing on platform, if yes, do not apply gravity
+def on_platform(platform):
+	if Player.rect.colliderect(platform):
+		if abs(platform.top - Player.rect.bottom) < 20 and ((platform.left < Player.rect.right) and (Player.rect.left < platform.right)):
+			return True
+	return False
+
 #controlling the flow of the game states
 def state():
 	global running, intro,score
@@ -122,36 +152,6 @@ def state():
 
 		#clear all platforms
 		platforms.empty()
-
-def reset_score():
-	global score, start_time
-	score = 0
-	start_time = pygame.time.get_ticks()//750
-
-
-#checking if player goes out of bounds
-def game_over():
-	global high_score
-	if HEIGHT < Player.rect.top or pygame.sprite.spritecollide(Player,spike_group,False):
-		high_score = stat.save_highscore(score,high_score)
-		return False
-	return True
-
-#checking if player is colliding with platform, if yes, dont let the player move further
-def path_blocked(platform):
-	if Player.rect.colliderect(platform) and not on_platform(platform):
-		if abs(platform.left - Player.rect.right) < 10:
-			return True
-		if abs(platform.right - Player.rect.left) < 10:
-			return True
-	return False
-
-#checking if player is standing on platform, if yes, do not apply gravity
-def on_platform(platform):
-	if Player.rect.colliderect(platform):
-		if abs(platform.top - Player.rect.bottom) < 20 and ((platform.left < Player.rect.right) and (Player.rect.left < platform.right)):
-			return True
-	return False
 
 #gameloop
 while True:
