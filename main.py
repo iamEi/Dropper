@@ -92,7 +92,7 @@ def on_platform(platform):
 def gamestate():
 	global running, intro,score
 	if intro:
-		intro = start.draw_intro()
+		start.draw_intro()
 		#pressing SPACE would make intro = FALSE, running the game.
 		if not intro:
 			reset_score()
@@ -161,8 +161,9 @@ while True:
 			if running:
 				platforms.add(Platforms())
 
-		if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-			bgm.play(loops = -1)
+		if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+			# bgm.play(loops = -1)
+			intro = False
 			running = True
 
 	gamestate()

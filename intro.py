@@ -26,12 +26,6 @@ class Intro():
 		self.draw_outline((self.colors['red'],self.colors['black'],self.colors['blue']),start[1],(0,15,5))
 		self.screen.blit(*start)
 
-		keys = pygame.key.get_pressed()
-		if keys[pygame.K_SPACE]:
-			return False
-		elif keys[pygame.K_q]: pygame.quit()
-		return True
-
 	def draw_text(self,font,text,color,xpos,ypos,vars = ''):
 		rendered_text = font.render(text+str(vars),False,color)
 		text_rect = rendered_text.get_rect(center = (xpos,ypos))
