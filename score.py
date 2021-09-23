@@ -29,8 +29,8 @@ class Score():
 		self.screen.blit(*score)
 		return time
 
-	def display_highscore(self, high_score):
-		highscore = self.draw_text(self.score_font,'High Score: ',self.colors['white'],250,550,high_score)
+	def display_highscore(self):
+		highscore = self.draw_text(self.score_font,'High Score: ',self.colors['white'],250,550,self.get_hs())
 		self.draw_outline((self.colors['red'],self.colors['black'],self.colors['blue']),highscore[1],(0,15,5))
 
 		gameover = self.draw_text(self.gameover_font,'GAME OVER',self.colors['white'],250,325)

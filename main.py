@@ -42,7 +42,6 @@ pygame.time.set_timer(spawn_timer,500)
 #initial values
 start_time = 0
 score = 0
-high_score = 0
 intro = True
 running = False
 
@@ -68,9 +67,8 @@ def reset_score():
 
 #checking if player goes out of bounds
 def game_over():
-	global high_score
 	if HEIGHT < Player.rect.top or pygame.sprite.spritecollide(Player,spike_group,False):
-		high_score = stat.save_highscore(score,high_score)
+		stat.save_highscore(score,stat.get_hs())
 		return False
 	return True
 
@@ -143,7 +141,7 @@ def gamestate():
 
 		#reset numbers
 		reset_score()
-		stat.display_highscore(high_score)
+		stat.display_highscore()
 
 		#reset player position
 		Player.reset()
