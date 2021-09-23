@@ -1,5 +1,4 @@
-import pygame
-import sys
+import pygame, sys
 from player import Player
 from platforms import Platforms
 from score import Score
