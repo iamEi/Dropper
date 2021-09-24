@@ -1,9 +1,8 @@
 import pygame, sys
 from player import Player
 from platforms import Platforms
-from score import Score
 from spikes import Spikes
-from intro import Intro
+from text import Text
 
 #initializing pygame
 pygame.init()
@@ -44,9 +43,8 @@ score = 0
 intro = True
 running = False
 
-#creating objects
-stat = Score(screen)
-start = Intro(screen,bg,bg_rect)
+#creating text display object
+text = Text(screen,bg,bg_rect)
 
 #creating sprites
 player = pygame.sprite.GroupSingle()
@@ -67,7 +65,7 @@ def reset_score():
 #checking if player goes out of bounds
 def game_over():
 	if HEIGHT < Player.rect.top or pygame.sprite.spritecollide(Player,spike_group,False):
-		stat.save_highscore(score,stat.get_hs())
+		text.save_highscore(score,text.get_hs())
 		return False
 	return True
 
@@ -91,7 +89,7 @@ def on_platform(platform):
 def gamestate():
 	global running, intro,score
 	if intro:
-		start.draw_intro()
+		text.display_intro()
 		#pressing SPACE would make intro = FALSE, running the game.
 		if not intro:
 			reset_score()
@@ -122,9 +120,9 @@ def gamestate():
 		#spikes at the top
 		spike_group.draw(screen)
 
-		score = stat.update_score(score,start_time)
-		if score > stat.get_hs():		
-			stat.new_highscore()
+		score = text.display_score(score,start_time)
+		if score > text.get_hs():		
+			text.new_highscore()
 
 		player.update()
 		platforms.update()
@@ -140,7 +138,7 @@ def gamestate():
 
 		#reset numbers
 		reset_score()
-		stat.display_highscore()
+		text.display_highscore()
 
 		#reset player position
 		Player.reset()
