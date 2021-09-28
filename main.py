@@ -34,7 +34,6 @@ bgm = pygame.mixer.Sound('sounds/Melody.mp3')
 bgm.play(loops = -1,fade_ms=2000)
 
 #initial values
-frequency = 700
 start_time = 0
 score = 0
 intro = True
@@ -43,7 +42,7 @@ speed = 2
 
 #setting frequency of platform spawn
 spawn_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(spawn_timer,frequency)
+pygame.time.set_timer(spawn_timer,800)
 
 speedup_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(speedup_timer,2000)
@@ -98,7 +97,7 @@ def on_platform(platform):
 
 #controlling the flow of the game states
 def gamestate():
-	global running, intro,score, speed, frequency
+	global running, intro,score, speed
 	if intro:
 		text.display_intro()
 		#pressing SPACE would make intro = FALSE, running the game.
@@ -151,7 +150,6 @@ def gamestate():
 		reset_score()
 		text.display_highscore()
 		speed = 2
-		frequency = 700
 
 		#reset player position
 		Player.reset()
@@ -171,6 +169,10 @@ while True:
 		if running:
 			if event.type == spawn_timer:
 				platforms.add(Platforms(speed))
+				if int(speed) == 3:
+					pygame.time.set_timer(spawn_timer,600)
+				if int(speed) == 4:
+					pygame.time.set_timer(spawn_timer,500)
 
 			if event.type == speedup_timer:
 				if speed < 5:
@@ -181,16 +183,9 @@ while True:
 		if not running:
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
 				# bgm.play(loops = -1)
+				pygame.time.set_timer(spawn_timer,700)
 				intro = False
 				running = True
-
-
-	if speed < 3:
-		frequency = 700
-	elif speed < 4:
-		frequency = 500
-	else:
-		frequency = 300
 
 	gamestate()
 	pygame.display.flip()
