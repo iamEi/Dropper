@@ -61,7 +61,6 @@ for i in [-10,120,250,380]:
 
 def speedup():
 	global speed
-	print(f'speed: {int(speed)}')
 	speed += 0.1
 	for i in platforms.sprites():
 		i.speed = speed
