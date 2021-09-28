@@ -33,15 +33,19 @@ over = pygame.mixer.Sound('sounds/game_over.mp3')
 bgm = pygame.mixer.Sound('sounds/Melody.mp3')
 bgm.play(loops = -1,fade_ms=2000)
 
-#setting frequency of platform spawn
-spawn_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(spawn_timer,500)
-
 #initial values
 start_time = 0
 score = 0
 intro = True
 running = False
+speed = 2
+
+#setting frequency of platform spawn
+spawn_timer = pygame.USEREVENT + 1
+pygame.time.set_timer(spawn_timer,800)
+
+speedup_timer = pygame.USEREVENT + 2
+pygame.time.set_timer(speedup_timer,2000)
 
 #creating text display object
 text = Text(screen,bg,bg_rect)
@@ -55,6 +59,12 @@ spike_group = pygame.sprite.Group()
 for i in [-10,120,250,380]:
 	spike_group.add(Spikes(i,-15))
 
+def speedup():
+	global speed
+	print(f'speed: {int(speed)}')
+	speed += 0.1
+	for i in platforms.sprites():
+		i.speed = speed
 
 def reset_score():
 	global score, start_time
@@ -87,7 +97,7 @@ def on_platform(platform):
 
 #controlling the flow of the game states
 def gamestate():
-	global running, intro,score
+	global running, intro,score, speed
 	if intro:
 		text.display_intro()
 		#pressing SPACE would make intro = FALSE, running the game.
@@ -139,6 +149,7 @@ def gamestate():
 		#reset numbers
 		reset_score()
 		text.display_highscore()
+		speed = 2
 
 		#reset player position
 		Player.reset()
@@ -149,19 +160,32 @@ def gamestate():
 
 #gameloop
 while True:
+
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			exit()
+			
+		if running:
+			if event.type == spawn_timer:
+				platforms.add(Platforms(speed))
+				if int(speed) == 3:
+					pygame.time.set_timer(spawn_timer,600)
+				if int(speed) == 4:
+					pygame.time.set_timer(spawn_timer,500)
 
-		if event.type == spawn_timer:
-			if running:
-				platforms.add(Platforms())
+			if event.type == speedup_timer:
+				if speed < 5:
+					speedup()
+				else:
+					pygame.time.set_timer(speedup_timer,0)
 
-		if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-			# bgm.play(loops = -1)
-			intro = False
-			running = True
+		if not running:
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+				# bgm.play(loops = -1)
+				pygame.time.set_timer(spawn_timer,700)
+				intro = False
+				running = True
 
 	gamestate()
 	pygame.display.flip()
